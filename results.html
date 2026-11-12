@@ -1,0 +1,57 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>实时投票结果</title><style>
+:root{color-scheme:dark;font:16px/1.55 system-ui,sans-serif;background:#10181c;color:#f2f5f2}
+*{box-sizing:border-box}body{margin:0}main{max-width:680px;margin:auto;padding:clamp(28px,8vw,70px) 20px}
+h1{font-size:clamp(30px,7vw,48px);line-height:1.16;margin:0 0 16px}p{color:#bdceca}
+.track{display:grid;grid-template-columns:85px 1fr;align-items:center;gap:8px;border-bottom:1px solid #344542;padding:9px 0}
+audio{width:100%;height:43px}fieldset{padding:0;border:0;margin:26px 0 14px}legend{font-weight:700;padding:0;margin-bottom:9px}
+label{display:inline-flex;gap:6px;align-items:center;padding:9px;margin:3px 6px 3px 0;background:#233431;border-radius:7px}
+label:has(:checked){outline:2px solid #9ce9c9}button{background:#a8f0cf;color:#122920;border:0;border-radius:8px;padding:11px 20px;font:inherit;font-weight:700;cursor:pointer}button:disabled{opacity:.55}
+a{color:#a8f0cf}footer{margin-top:32px}#unlock input{display:block;margin:8px 0 14px;padding:10px;font:inherit;border:1px solid #637774;border-radius:7px;width:100%;max-width:240px}
+meter{width:100%;display:block;height:22px}#status{min-height:1.6em}
+</style><main><h1>实时投票结果</h1><form id="unlock"><label for="pin">实验人员口令</label><input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="off" required><button>查看结果</button></form><p id="status" role="status"></p><div id="results-panel" hidden><section id="A"><p>样本 A · 10 Hz　<span></span></p><meter aria-label="样本 A 得票占比" max="1" value="0"></meter></section><section id="B"><p>样本 B · 0.25 Hz　<span></span></p><meter aria-label="样本 B 得票占比" max="1" value="0"></meter></section><section id="C"><p>样本 C · 40 Hz　<span></span></p><meter aria-label="样本 C 得票占比" max="1" value="0"></meter></section><section id="D"><p>样本 D · 6 Hz　<span></span></p><meter aria-label="样本 D 得票占比" max="1" value="0"></meter></section><section id="E"><p>样本 E · 12 Hz　<span></span></p><meter aria-label="样本 E 得票占比" max="1" value="0"></meter></section></div><footer><a href="/">返回试听页</a></footer></main><script>
+const status = document.querySelector('#status');
+const form = document.querySelector('#unlock');
+const panel = document.querySelector('#results-panel');
+const input = form.elements.pin;
+const button = form.querySelector('button');
+if (location.hash) history.replaceState(null, '', location.pathname);
+async function refresh(pin) {
+  try {
+    const response = await fetch('/api/results', { headers:{Authorization:'Bearer '+pin} });
+    if (response.status === 403) {
+      panel.hidden = true;
+      form.hidden = false;
+      button.disabled = false;
+      status.textContent = '口令不正确，请重试。';
+      input.focus();
+      return;
+    }
+    if (!response.ok) throw Error();
+    const counts = await response.json();
+    const total = Object.values(counts).reduce((sum,n) => sum+n, 0);
+    status.textContent = '共 '+total+' 票 · 每 5 秒更新';
+    for (const [sample,count] of Object.entries(counts)) {
+      const row = document.getElementById(sample);
+      const share = total ? count / total : 0;
+      row.querySelector('span').textContent = count+' 票 · '+(100*share).toFixed(1)+'%';
+      row.querySelector('meter').value = share;
+    }
+    input.value = '';
+    form.hidden = true;
+    panel.hidden = false;
+  } catch {
+    status.textContent = '暂时无法更新，请稍后重试。';
+    if (!form.hidden) {
+      button.disabled = false;
+      return;
+    }
+  }
+  setTimeout(() => refresh(pin), 5000);
+}
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  button.disabled = true;
+  status.textContent = '正在验证…';
+  refresh(input.value.trim());
+});
+</script></html>
