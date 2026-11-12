@@ -27,7 +27,8 @@ async function refresh(pin) {
       return;
     }
     if (!response.ok) throw Error();
-    const counts = await response.json();
+    const data = await response.json();
+    const counts = data.summary;
     const total = Object.values(counts).reduce((sum,n) => sum+n, 0);
     status.textContent = '共 '+total+' 票 · 每 5 秒更新';
     for (const [sample,count] of Object.entries(counts)) {
