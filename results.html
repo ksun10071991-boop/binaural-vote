@@ -8,13 +8,19 @@ label{display:inline-flex;gap:6px;align-items:center;padding:9px;margin:3px 6px 
 label:has(:checked){outline:2px solid #9ce9c9}button{background:#a8f0cf;color:#122920;border:0;border-radius:8px;padding:11px 20px;font:inherit;font-weight:700;cursor:pointer}button:disabled{opacity:.55}
 a{color:#a8f0cf}footer{margin-top:32px}#unlock input{display:block;margin:8px 0 14px;padding:10px;font:inherit;border:1px solid #637774;border-radius:7px;width:100%;max-width:240px}
 meter{width:100%;display:block;height:22px}#status{min-height:1.6em}
-</style><main><h1>实时投票结果</h1><form id="unlock"><label for="pin">实验人员口令</label><input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="off" required><button>查看结果</button></form><p id="status" role="status"></p><div id="results-panel" hidden><section id="A"><p>样本 A · 10 Hz　<span></span></p><meter aria-label="样本 A 得票占比" max="1" value="0"></meter></section><section id="B"><p>样本 B · 0.25 Hz　<span></span></p><meter aria-label="样本 B 得票占比" max="1" value="0"></meter></section><section id="C"><p>样本 C · 40 Hz　<span></span></p><meter aria-label="样本 C 得票占比" max="1" value="0"></meter></section><section id="D"><p>样本 D · 6 Hz　<span></span></p><meter aria-label="样本 D 得票占比" max="1" value="0"></meter></section><section id="E"><p>样本 E · 12 Hz　<span></span></p><meter aria-label="样本 E 得票占比" max="1" value="0"></meter></section></div><footer><a href="./index.html">返回试听页</a></footer></main><script>
+</style><main><h1>实时投票结果</h1><form id="unlock"><label for="pin">实验人员口令</label><input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="off" required><button>查看结果</button></form><p id="status" role="status"></p><div id="results-panel" hidden><section id="A"><p>样本 A · 10 Hz　<span></span></p><meter aria-label="样本 A 得票占比" max="1" value="0"></meter></section><section id="B"><p>样本 B · 0.25 Hz　<span></span></p><meter aria-label="样本 B 得票占比" max="1" value="0"></meter></section><section id="C"><p>样本 C · 40 Hz　<span></span></p><meter aria-label="样本 C 得票占比" max="1" value="0"></meter></section><section id="D"><p>样本 D · 6 Hz　<span></span></p><meter aria-label="样本 D 得票占比" max="1" value="0"></meter></section><section id="E"><p>样本 E · 12 Hz　<span></span></p><meter aria-label="样本 E 得票占比" max="1" value="0"></meter></section>
+<button id="export-csv" type="button" style="margin-top:24px">
+  导出 CSV 原始数据
+</button>
+</div><footer><a href="./index.html">返回试听页</a></footer></main><script>
 const status = document.querySelector('#status');
 const form = document.querySelector('#unlock');
 const panel = document.querySelector('#results-panel');
 const input = form.elements.pin;
 const button = form.querySelector('button');
 if (location.hash) history.replaceState(null, '', location.pathname);
+let latestVotes = [];
+
 async function refresh(pin) {
   try {
     if (pin !== '000') {
@@ -47,7 +53,7 @@ const response = await fetch(
     
 const data = (await response.json()).record;
 if (!Array.isArray(data.votes)) throw Error('数据格式错误');
-
+latestVotes = data.votes;
 const counts = { A: 0, B: 0, C: 0, D: 0, E: 0 };
 const seen = new Set();
 
@@ -88,5 +94,55 @@ form.addEventListener('submit', event => {
   button.disabled = true;
   status.textContent = '正在验证…';
   refresh(input.value.trim());
+});
+
+document.querySelector('#export-csv').addEventListener('click', () => {
+  const rows = [
+    ['id', 'age', 'gender', 'choice', 'time']
+  ];
+
+  const seen = new Set();
+
+  for (const vote of latestVotes) {
+    if (
+      !vote ||
+      typeof vote.id !== 'string' ||
+      seen.has(vote.id) ||
+      !['A', 'B', 'C', 'D', 'E'].includes(vote.choice)
+    ) continue;
+
+    seen.add(vote.id);
+
+    rows.push([
+      vote.id,
+      vote.age ?? '',
+      vote.gender ?? '',
+      vote.choice,
+      vote.time ?? ''
+    ]);
+  }
+
+  const escapeCSV = value =>
+    '"' + String(value).replace(/"/g, '""') + '"';
+
+  const csv = '\uFEFF' +
+    rows.map(row => row.map(escapeCSV).join(',')).join('\r\n');
+
+  const blob = new Blob([csv], {
+    type: 'text/csv;charset=utf-8;'
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  link.href = url;
+  link.download = 'music_survey_' +
+    new Date().toISOString().slice(0, 10) + '.csv';
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 </script></html>
