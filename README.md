@@ -1,112 +1,67 @@
-***Binaural Beats Preference Survey***
-A lightweight, web-based research tool designed to collect subjective music preferences across different age groups and genders.
 
-The platform supports audio playback, participant response collection, real-time vote visualization, and CSV data export. It is intended for exploratory research on music perception and preference, with potential applications in sleep-related audio design and product development.
+<div align="center">
 
-Features
+# Music Listening Preference Survey
 
-Audio Playback — Listen to five audio samples (A–E), with unlimited replay.
+**A lightweight research tool for music perception and listening preferences.**
 
-Participant Information — Collect age and gender information.
+Research Prototype · HTML/CSS/JavaScript · CSV Export
 
-Preference Survey — Allow participants to select their preferred audio sample.
+[**Take the Survey**](https://ksun10071991-boop.github.io/binaural-vote/) · [**View Results**](https://ksun10071991-boop.github.io/binaural-vote/results.html)
 
-Data Storage — Store individual responses using JSONBin.
+</div>
 
-Real-Time Results — Display vote counts and percentage distributions.
+---
 
-CSV Export — Export individual responses for further analysis in Excel, R, or Python.
+## Overview
 
-Responsive Interface — Support desktop and mobile browsers.
+A web-based research platform designed to collect subjective music preferences across different age groups and genders.
 
-Live Demo
+The system supports audio playback, participant response collection, real-time vote visualization, and CSV export for exploratory data analysis.
 
-Take the Survey
+## Features
 
-View Results
+- **Audio Playback:** Five audio samples (A–E) with unlimited replay.
+- **Participant Information:** Age and gender collection.
+- **Preference Survey:** Single-choice listening preference assessment.
+- **Real-Time Results:** Vote counts and percentage distributions.
+- **CSV Export:** Individual-level data for Excel, R, and Python.
+- **Responsive Design:** Desktop and mobile browser support.
 
-The results page is intended for research personnel.
+## Technology Stack
 
-Technology Stack
+| Component | Technology |
+| :--- | :--- |
+| Frontend | HTML5, CSS3, JavaScript |
+| Hosting | GitHub Pages |
+| Database | JSONBin |
+| Data Storage | JSON |
+| Data Export | CSV |
 
-Component
+## Data Structure
 
-Technology
+Each submission contains the following fields:
 
-Frontend
+| Field | Description |
+| :--- | :--- |
+| `id` | Unique response identifier |
+| `age` | Participant age in years |
+| `gender` | Participant gender |
+| `choice` | Preferred audio sample (A–E) |
+| `time` | Submission timestamp (UTC) |
 
-HTML5, CSS3, JavaScript
+## Research Applications
 
-Hosting
+The collected data can support exploratory analysis of:
 
-GitHub Pages
+- Overall listening preference distributions
+- Differences across age groups
+- Gender-related preference patterns
+- Associations between demographic characteristics and audio preferences
 
-Data Storage
+## Project Structure
 
-JSONBin
-
-Data Format
-
-JSON
-
-Data Export
-
-CSV
-
-Data Structure
-
-Each survey submission is stored as an individual record.
-
-{
-  "id": "unique-response-id",
-  "age": 35,
-  "gender": "Female",
-  "choice": "A",
-  "time": "2026-11-13T05:30:00.000Z"
-}
-
-The gender field is stored using the Chinese values 男 and 女 in the current implementation.
-
-Field
-
-Description
-
-id
-
-Unique response identifier
-
-age
-
-Participant age in years
-
-gender
-
-Participant gender
-
-choice
-
-Preferred audio sample (A–E)
-
-time
-
-Submission timestamp (UTC)
-
-Research Applications
-
-The collected data can support exploratory analyses of:
-
-Overall preference distributions across audio samples.
-
-Music preferences across age groups.
-
-Gender-related differences in listening preferences.
-
-Potential associations between demographic characteristics and audio preferences.
-
-The survey is designed for descriptive and exploratory analysis rather than clinical assessment.
-
-Project Structure
-
+```text
 binaural-vote/
 ├── index.html
 ├── results.html
@@ -117,19 +72,24 @@ binaural-vote/
 │   ├── D.mp3
 │   └── E.mp3
 └── README.md
+```
 
-Limitations
+## Limitations
 
-This project is a research prototype intended for small-scale exploratory surveys.
+This project is intended for small-scale exploratory research.
 
-The current implementation uses client-side JSONBin API requests. Concurrent submissions may result in overwritten records, and client-side API credentials do not provide secure access control.
+The current client-side JSONBin integration has limitations related to API credential exposure and concurrent data updates. Additional backend security and data-integrity safeguards are recommended before broader deployment.
 
-The platform should not be used for sensitive data collection or large-scale public deployment without additional backend security and data-integrity improvements.
+## Project Status
 
-Project Status
+**Research Prototype — Core Features Tested**
 
-Research Prototype — Functional Testing Completed
+Audio playback, response submission, vote visualization, and CSV export have undergone basic functional testing.
 
-Core features, including audio playback, response submission, vote visualization, and CSV export, have undergone basic functional testing.
+---
 
-Further improvements may include enhanced data security, concurrent submission handling, and additional statistical visualization.
+<div align="center">
+
+*Music Perception · Listening Preferences · Exploratory Research*
+
+</div>
