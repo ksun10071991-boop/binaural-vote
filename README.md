@@ -1,56 +1,135 @@
-# Binaural Beats Listening & Voting Survey
+Bianural Beats Preference Survey
+A lightweight, web-based research tool designed to collect subjective music preferences across different age groups and genders.
 
-A lightweight web-based research tool for collecting subjective listening preferences across five binaural beat audio samples.
+The platform supports audio playback, participant response collection, real-time vote visualization, and CSV data export. It is intended for exploratory research on music perception and preference, with potential applications in sleep-related audio design and product development.
 
-**[Launch Listening Survey](https://ksun10071991-boop.github.io/binaural-vote/)**
+Features
 
-## Overview
+Audio Playback — Listen to five audio samples (A–E), with unlimited replay.
 
-This project provides a simple, browser-based interface for comparing five short binaural beat audio samples. Participants listen using stereo headphones and select the sample they prefer based on subjective listening experience.
+Participant Information — Collect age and gender information.
 
-The application supports audio playback, preference voting, persistent data storage, and an access-controlled results dashboard.
+Preference Survey — Allow participants to select their preferred audio sample.
 
-## Features
+Data Storage — Store individual responses using JSONBin.
 
-- **Audio comparison:** Five 5-second MP3 samples with replay controls.
-- **Preference voting:** Participants select one preferred sample from options A–E.
-- **Duplicate-vote handling:** Browser-based submission tracking and a persistent participant identifier.
-- **Persistent storage:** Responses are stored in a Cloudflare D1 SQLite database.
-- **Results dashboard:** Authorized researchers can view vote counts and percentages, with automatic refresh every five seconds.
+Real-Time Results — Display vote counts and percentage distributions.
 
-## Audio Stimuli
+CSV Export — Export individual responses for further analysis in Excel, R, or Python.
 
-| Sample | Binaural Beat Frequency |
-|---|---|
-| A | 10 Hz |
-| B | 0.25 Hz |
-| C | 40 Hz |
-| D | 6 Hz |
-| E | 12 Hz |
+Responsive Interface — Support desktop and mobile browsers.
 
-## Technology Stack
+Live Demo
 
-| Component | Technology |
-|---|---|
-| Frontend | HTML, CSS, JavaScript |
-| Static Hosting | GitHub Pages |
-| Backend API | Cloudflare Workers |
-| Database | Cloudflare D1 (SQLite) |
+Take the Survey
 
-## Research Scope
+View Results
 
-This tool is intended for exploratory listening-preference assessment and audio stimulus evaluation.
+The results page is intended for research personnel.
 
-The survey measures **subjective preference**, not physiological entrainment, clinical efficacy, or therapeutic outcomes.
+Technology Stack
 
-## Project Status
+Component
 
-Functional prototype deployed for preliminary testing and exploratory data collection.
+Technology
 
-## Future Development
+Frontend
 
-Potential improvements include expanded subjective rating scales, randomized audio presentation order, and structured data export.
+HTML5, CSS3, JavaScript
 
-## Research Context
+Hosting
 
-Developed as part of exploratory work on auditory stimulation, binaural beats, and subjective listening experience.
+GitHub Pages
+
+Data Storage
+
+JSONBin
+
+Data Format
+
+JSON
+
+Data Export
+
+CSV
+
+Data Structure
+
+Each survey submission is stored as an individual record.
+
+{
+  "id": "unique-response-id",
+  "age": 35,
+  "gender": "Female",
+  "choice": "A",
+  "time": "2026-11-13T05:30:00.000Z"
+}
+
+The gender field is stored using the Chinese values 男 and 女 in the current implementation.
+
+Field
+
+Description
+
+id
+
+Unique response identifier
+
+age
+
+Participant age in years
+
+gender
+
+Participant gender
+
+choice
+
+Preferred audio sample (A–E)
+
+time
+
+Submission timestamp (UTC)
+
+Research Applications
+
+The collected data can support exploratory analyses of:
+
+Overall preference distributions across audio samples.
+
+Music preferences across age groups.
+
+Gender-related differences in listening preferences.
+
+Potential associations between demographic characteristics and audio preferences.
+
+The survey is designed for descriptive and exploratory analysis rather than clinical assessment.
+
+Project Structure
+
+binaural-vote/
+├── index.html
+├── results.html
+├── audio/
+│   ├── A.mp3
+│   ├── B.mp3
+│   ├── C.mp3
+│   ├── D.mp3
+│   └── E.mp3
+└── README.md
+
+Limitations
+
+This project is a research prototype intended for small-scale exploratory surveys.
+
+The current implementation uses client-side JSONBin API requests. Concurrent submissions may result in overwritten records, and client-side API credentials do not provide secure access control.
+
+The platform should not be used for sensitive data collection or large-scale public deployment without additional backend security and data-integrity improvements.
+
+Project Status
+
+Research Prototype — Functional Testing Completed
+
+Core features, including audio playback, response submission, vote visualization, and CSV export, have undergone basic functional testing.
+
+Further improvements may include enhanced data security, concurrent submission handling, and additional statistical visualization.
