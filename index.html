@@ -8,7 +8,33 @@ label{display:inline-flex;gap:6px;align-items:center;padding:9px;margin:3px 6px 
 label:has(:checked){outline:2px solid #9ce9c9}button{background:#a8f0cf;color:#122920;border:0;border-radius:8px;padding:11px 20px;font:inherit;font-weight:700;cursor:pointer}button:disabled{opacity:.55}
 a{color:#a8f0cf}footer{margin-top:32px}#unlock input{display:block;margin:8px 0 14px;padding:10px;font:inherit;border:1px solid #637774;border-radius:7px;width:100%;max-width:240px}
 meter{width:100%;display:block;height:22px}#status{min-height:1.6em}
-</style><main><h1>音乐听感调研</h1><p>请将音量调到舒适水平。听完五段各 5 秒的音频后，选出你最喜欢的一段。可以重复试听。</p><div class="track"><strong>样本 A</strong><audio aria-label="样本 A" controls preload="none" src="audio/A.mp3"></audio></div><div class="track"><strong>样本 B</strong><audio aria-label="样本 B" controls preload="none" src="audio/B.mp3"></audio></div><div class="track"><strong>样本 C</strong><audio aria-label="样本 C" controls preload="none" src="audio/C.mp3"></audio></div><div class="track"><strong>样本 D</strong><audio aria-label="样本 D" controls preload="none" src="audio/D.mp3"></audio></div><div class="track"><strong>样本 E</strong><audio aria-label="样本 E" controls preload="none" src="audio/E.mp3"></audio></div><form><fieldset><legend>只考虑听感，你最喜欢哪一段？</legend><label><input required name="choice" type="radio" value="A">样本 A</label><label><input required name="choice" type="radio" value="B">样本 B</label><label><input required name="choice" type="radio" value="C">样本 C</label><label><input required name="choice" type="radio" value="D">样本 D</label><label><input required name="choice" type="radio" value="E">样本 E</label></fieldset><button>提交选择</button></form><p id="status" role="status"></p><footer><a href="/binaural-vote/results.html">我是实验人员</a></footer></main><script>
+</style><main><h1>音乐听感调研</h1><p>请将音量调到舒适水平。听完五段各 5 秒的音频后，选出你最喜欢的一段。可以重复试听。</p><div class="track"><strong>样本 A</strong><audio aria-label="样本 A" controls preload="none" src="audio/A.mp3"></audio></div><div class="track"><strong>样本 B</strong><audio aria-label="样本 B" controls preload="none" src="audio/B.mp3"></audio></div><div class="track"><strong>样本 C</strong><audio aria-label="样本 C" controls preload="none" src="audio/C.mp3"></audio></div><div class="track"><strong>样本 D</strong><audio aria-label="样本 D" controls preload="none" src="audio/D.mp3"></audio></div><div class="track"><strong>样本 E</strong><audio aria-label="样本 E" controls preload="none" src="audio/E.mp3"></audio></div>
+<form>
+  <fieldset>
+    <legend>1. 您的年龄（周岁）</legend>
+    <input
+      type="number"
+      name="age"
+      min="1"
+      max="120"
+      step="1"
+      placeholder="请输入年龄"
+      required
+    >
+  </fieldset>
+
+  <fieldset>
+    <legend>2. 您的性别</legend>
+    <label>
+      <input type="radio" name="gender" value="男" required>
+      男
+    </label>
+    <label>
+      <input type="radio" name="gender" value="女">
+      女
+    </label>
+  </fieldset>
+<fieldset><legend>只考虑听感，你最喜欢哪一段？</legend><label><input required name="choice" type="radio" value="A">样本 A</label><label><input required name="choice" type="radio" value="B">样本 B</label><label><input required name="choice" type="radio" value="C">样本 C</label><label><input required name="choice" type="radio" value="D">样本 D</label><label><input required name="choice" type="radio" value="E">样本 E</label></fieldset><button>提交选择</button></form><p id="status" role="status"></p><footer><a href="/binaural-vote/results.html">我是实验人员</a></footer></main><script>
 const form = document.querySelector('form');
 const status = document.querySelector('#status');
 const button = form.querySelector('button');
@@ -29,7 +55,12 @@ form.addEventListener('submit', async (event) => {
   button.disabled = true;
   status.textContent = '正在提交…';
   try {
-    const choice = new FormData(form).get('choice');
+    
+const formData = new FormData(form);
+const choice = formData.get('choice');
+const age = Number(formData.get('age'));
+const gender = formData.get('gender');
+
     
 const BIN_ID = '6af57949ffd5d16053bb6e81';
 const ACCESS_KEY = '$2a$10$CeleCPa5DaDMY86Eqdn4V.REyg0XstepJYRNgtgIW9xjppXw8gT4u';
@@ -45,11 +76,15 @@ const data = (await readResponse.json()).record;
 if (!Array.isArray(data.votes)) throw Error('数据格式错误');
 
 if (!data.votes.some(vote => vote.id === id)) {
-  data.votes.push({
-    id,
-    choice,
-    time: new Date().toISOString()
-  });
+  
+data.votes.push({
+  id,
+  age,
+  gender,
+  choice,
+  time: new Date().toISOString()
+});
+
 
   const writeResponse = await fetch(BIN_URL, {
     method: 'PUT',
