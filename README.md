@@ -1,4 +1,4 @@
-Bianural Beats Preference Survey
+***Binaural Beats Preference Survey***
 A lightweight, web-based research tool designed to collect subjective music preferences across different age groups and genders.
 
 The platform supports audio playback, participant response collection, real-time vote visualization, and CSV data export. It is intended for exploratory research on music perception and preference, with potential applications in sleep-related audio design and product development.
