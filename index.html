@@ -16,17 +16,14 @@ const tracks = [...document.querySelectorAll('audio')];
 for (const track of tracks) track.addEventListener('play', () => {
   for (const other of tracks) if (other !== track) other.pause();
 });
-let id = localStorage.getItem('listeningBallot');
-if (!id) {
-  id = crypto.randomUUID();
-  localStorage.setItem('listeningBallot', id);
-}
+
+let id = crypto.randomUUID();
+
 function finished() {
-  localStorage.setItem('listeningVoted', 'yes');
   form.hidden = true;
-  status.textContent = '感谢参与，你的选择已记录。';
+  status.textContent = '感谢参与，你的选择已记录。刷新页面可再次填写。';
 }
-if (localStorage.getItem('listeningVoted')) finished();
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   button.disabled = true;
